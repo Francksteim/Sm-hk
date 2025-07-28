@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head> 
+  <meta charset="utf-8" />
+  <title>SM HF OTAKU</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #f7f8fc;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    .auth-container {
+      max-width: 400px;
+      margin: 30px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .auth-container input {
+      width: 90%;
+      padding: 12px;
+      margin: 10px auto;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      display: block;
+      font-size: 1rem;
+    }
+
+    .auth-container button {
+      width: 45%;
+      margin: 5px;
+      padding: 12px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #4e73df;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .auth-container button:hover {
+      background-color: #3659c9;
+    }
+
+    #logout-section {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    a {
+      color: #4e73df;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="image/haut du site.jpg" alt="Bannière du site" style="width: 100%; max-height: 250px; object-fit: cover;" />
+</header>
+
+<h1>SM HF OTAKU</h1>
+<p style="text-align: center;">Bienvenue <span id="username">visiteur</span> sur la plateforme dédiée aux <strong>romans, manhwa et manga</strong> !</p>
+
+<!-- CONNEXION STYLÉE -->
+<section class="auth-container">
+  <div id="auth-section">
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Mot de passe" />
+    <div style="text-align: center;">
+      <button onclick="login()">Connexion</button>
+      <button onclick="signup()">S'inscrire</button>
+    </div>
+  </div>
+
+  <div id="logout-section" style="display:none;">
+    <p>Connecté en tant que <strong><span id="user-email"></span></strong></p>
+    <button onclick="logout()">Se déconnecter</button>
+  </div>
+</section>
+
+<section style="max-width: 800px; margin: auto; margin-top: 40px;">
+  <h2>Lire des Romans</h2>
+  <ul style="text-align: center;">
+    <li><a href="page 1.html">📘 Manhwa de SM</a></li>
+    <li><a href="page 2.html">📗 Manhwa d'autres auteurs</a></li>
+  </ul>
+</section>
+
+<footer style="margin-top: 50px; text-align: center;">
+  <img src="image/bas.jpg" alt="Bas de page" style="width: 100%; max-height: 150px; object-fit: cover;" />
+  <p style="color: #aaa; font-size: 0.9rem;">© 2025 SM HF Otaku - Tous droits réservés.</p>
+</footer>
+
+<!-- FIREBASE -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCoYgzbP16G7WZyJWMAwrym0a3dPK9KXXw",
+    authDomain: "sm-hf-otaku.firebaseapp.com",
+    projectId: "sm-hf-otaku",
+    storageBucket: "sm-hf-otaku.appspot.com",
+    messagingSenderId: "641341705756",
+    appId: "1:641341705756:web:8f2ec4d9235a83de2859d9",
+    measurementId: "G-9XY0G4VZCM"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  const login = () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    signInWithEmailAndPassword(auth, email, password)
+      .catch((error) => alert("Erreur de connexion : " + error.message));
+  };
+
+  const signup = () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    createUserWithEmailAndPassword(auth, email, password)
+      .catch((error) => alert("Erreur de création : " + error.message));
+  };
+
+  const logout = () => {
+    signOut(auth);
+  };
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      document.getElementById("auth-section").style.display = "none";
+      document.getElementById("logout-section").style.display = "block";
+      document.getElementById("user-email").textContent = user.email;
+      document.getElementById("username").textContent = user.email.split("@")[0];
+    } else {
+      document.getElementById("auth-section").style.display = "block";
+      document.getElementById("logout-section").style.display = "none";
+      document.getElementById("username").textContent = "visiteur";
+    }
+  });
+</script>
+
+</body>
+</html>
